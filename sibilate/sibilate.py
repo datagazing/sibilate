@@ -441,8 +441,9 @@ def whisper_install():
         )
         logger.debug(f"proc.stderr =\n{proc.stderr}")
         logger.debug(f"proc.stdout =\n{proc.stdout}")
-        if not re.search('codec', proc.stdout):
-            raise subprocess.SubprocessError('options check failed')
+
+        # Now try again to import as a test of successful install
+        import whisper  # noqa F401
     except Exception as e:
         logger.debug(f"pip stdout =\n{proc.stdout}")
         logger.debug(f"pip stderr =\n{proc.stderr}")
