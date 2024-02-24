@@ -1,5 +1,5 @@
 """
-See top level package docstring for documentation: help(sibilate)
+Subtitle generator using whisper LLM
 """
 
 import argparse

@@ -22,7 +22,7 @@ Subtitle generator using whisper LLM
                   [--txtfile F] [-W]
                   inputfile
   
-  See top level package docstring for documentation: help(sibilate)
+  Subtitle generator using whisper LLM
   
   positional arguments:
     inputfile           Input file with audio
