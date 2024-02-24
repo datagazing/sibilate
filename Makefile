@@ -26,6 +26,11 @@ BROWSER := python3 -c "$$BROWSER_PYSCRIPT"
 help:
 	@python3 -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
+bump:
+	bump2version minor
+	git push
+	git push --tags
+
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## remove build artifacts

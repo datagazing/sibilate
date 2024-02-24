@@ -35,10 +35,9 @@ sibilate
     -L, --Log           log to file also
     --logfile F         log file name (sibilate_log.txt)
     -m M, --model M     tiny, base, small, medium, large (default: base)
-    -l L, --language L  (default: en)
-    --ffmpeg FFMPEG     path to ffmpeg A/V encoder (default:
-                        /usr/local/bin/ffmpeg)
-    -R DIR, --root DIR  download root (default: /Users/brendan/.whisper_models)
+    -l L, --language L  language (default: en)
+    --ffmpeg FFMPEG     path to ffmpeg A/V encoder
+    -R DIR, --root DIR  download root (default: ~/.whisper_models)
     -s, --subtitles     add subtitles to input file
     -b, --burn          burn subtitles into input file
     -S, --srt           save transcription to srt file
