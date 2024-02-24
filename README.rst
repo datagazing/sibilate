@@ -15,7 +15,7 @@ sibilate
 
 
 
-Subtitle generator using whissper LLM
+Subtitle generator using whisper LLM
 
 Credits
 -------
