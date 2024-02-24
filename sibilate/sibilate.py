@@ -51,6 +51,7 @@ def main():
         monist.config = configure()
         configure_logging()
         logger.debug(monist.config)
+        whisper_install() if monist.config['whisper'] else None
         ffmpeg_capability(monist.config['ffmpeg'])
         result = transcribe(
             inputfile=monist.config['inputfile'],
@@ -63,15 +64,21 @@ def main():
         save_srtfile(result) if monist.config['srt'] else None
         if monist.config['subtitles']:
             add_subtitles(result, inputfile=monist.config['inputfile'])
-        if monist.config['burn']:
+        elif monist.config['burn']:
             burn_subtitles(result, inputfile=monist.config['inputfile'])
+    except ModuleNotFoundError as e:
+        logger.error(f"Whisper not installed (see --whisper option)")
+        if monist.config['debug']:
+            raise
+        else:
+            sys.exit(2)
     except Exception as e:
         logger.error(f"Fatal: {e}")
         if monist.config['debug']:
             raise
         else:
             logger.warning('Run with -h for usage instructions')
-            exit()
+            sys.exit(1)
     logger.info('Completed without error')
 
 
@@ -361,7 +368,6 @@ def configure_logging():
     if not monist.config['debug']:
         warnings.filterwarnings('ignore', category=UserWarning)
 
-
     if monist.config['Log']:
         logger.addHandler(logging.FileHandler(monist.config['logfile']))
 
@@ -412,6 +418,8 @@ def ffmpeg_capability(ffmpeg):
         sys.exit(1)
 
 
+# For testing:
+# pip uninstall openai-whisper
 def whisper_install():
     """Install whisper package. Not sure why whisper is not on pypi."""
     try:
@@ -431,23 +439,18 @@ def whisper_install():
             check=True,
             text=True,
         )
-        # yyy
-        #if not re.search('codec', proc.stdout):
-        #    raise subprocess.SubprocessError('options check failed')
+        logger.debug(f"proc.stderr =\n{proc.stderr")
+        logger.debug(f"proc.stdout =\n{proc.stdout")
+        if not re.search('codec', proc.stdout):
+            raise subprocess.SubprocessError('options check failed')
     except Exception as e:
         logger.debug(f"pip stdout =\n{proc.stdout}")
         logger.debug(f"pip stderr =\n{proc.stderr}")
         logger.debug(f"Exception: {type(e).__name__}: {e}")
         logger.error(f"Failed to install whisper")
-        logger.error(f"Are git and pip available?")
+        logger.error(f"Are git and pip available in your PATH?")
         sys.exit(1)
 
 
 if __name__ == '__main__':
     main()
-
-
-# Extract Audio from Video
-# $1 = mp4 file
-# $2 = wav file
-# ffmpeg -i "$1" -ab 160k -ac 2 -ar 44100 -vn "$2"
