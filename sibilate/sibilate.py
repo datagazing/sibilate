@@ -67,7 +67,8 @@ def main():
         elif monist.config['burn']:
             burn_subtitles(result, inputfile=monist.config['inputfile'])
     except ModuleNotFoundError as e:
-        logger.error(f"Whisper not installed (see --whisper option)")
+        logger.error(f"{e}")
+        logger.error('Whisper not installed (see --whisper option)')
         if monist.config['debug']:
             raise
         else:
@@ -114,7 +115,7 @@ def save_txtfile(result):
     with open(monist.config['txtfile'], 'w') as f:
         f.write(result['text'])
 
-    
+
 def save_srtfile(result):
     logger.info(f"Writing subtitles: '{monist.config['srtfile']}' ...")
     generate_srt(result, output=monist.config['srtfile'])
@@ -151,7 +152,7 @@ def add_subtitles(result, inputfile, mark='_subtitled'):
         logger.debug(proc.stdout)
     except Exception as e:
         logger.debug(f"Exception: {type(e).__name__}: {e}")
-        logger.error(f"Command failed")
+        logger.error('Command failed')
         sys.exit(1)
 
     srt.delete = True
@@ -190,7 +191,7 @@ def burn_subtitles(result, inputfile, mark='_burned'):
         logger.debug(proc.stdout)
     except Exception as e:
         logger.debug(f"Exception: {type(e).__name__}: {e}")
-        logger.error(f"Command failed")
+        logger.error('Command failed')
         sys.exit(1)
 
     srt.delete = True
@@ -252,7 +253,7 @@ def cmdline():
 
     parser.add_argument(
         '-L', '--Log',
-        help=f"log to file also",
+        help='log to file also',
         action='store_const',
         const=True,
         default=None,
@@ -333,10 +334,9 @@ def cmdline():
         metavar='F',
     )
 
-    # yyy test this
     parser.add_argument(
         '-W', '--whisper',
-        help=f"install whisper package using git and pip",
+        help='install whisper package using git and pip',
         action='store_true',
     )
 
@@ -351,7 +351,7 @@ def cmdline():
 
     return args
 
-    
+
 def yaml_conf(file=os.path.expanduser(f"~/.{myself}.yaml")):
     return yaml.safe_load(open(file)) if os.path.isfile(file) else dict()
 
@@ -395,7 +395,7 @@ def generate_srt(result, output='subtitles.srt'):
 
 def ffmpeg_capability(ffmpeg):
     """Check basic ffmpeg functionality."""
-    try: 
+    try:
         # yyy check this
         if not ffmpeg:
             logger.info('Skipping ffmpeg capability check')
@@ -413,7 +413,7 @@ def ffmpeg_capability(ffmpeg):
             raise subprocess.SubprocessError('options check failed')
     except Exception as e:
         logger.debug(f"Exception: {type(e).__name__}: {e}")
-        logger.error(f"Failed ffmpeg capability check (see --ffmpeg option)")
+        logger.error('Failed ffmpeg capability check (see --ffmpeg option)')
         # yyy notes about how to install ffmpeg
         sys.exit(1)
 
@@ -423,7 +423,7 @@ def ffmpeg_capability(ffmpeg):
 def whisper_install():
     """Install whisper package. Not sure why whisper is not on pypi."""
     try:
-        import whisper
+        import whisper  # noqa F401
         return
     except Exception as e:
         logger.debug(f"Exception: {type(e).__name__}: {e}")
@@ -439,16 +439,16 @@ def whisper_install():
             check=True,
             text=True,
         )
-        logger.debug(f"proc.stderr =\n{proc.stderr")
-        logger.debug(f"proc.stdout =\n{proc.stdout")
+        logger.debug(f"proc.stderr =\n{proc.stderr}")
+        logger.debug(f"proc.stdout =\n{proc.stdout}")
         if not re.search('codec', proc.stdout):
             raise subprocess.SubprocessError('options check failed')
     except Exception as e:
         logger.debug(f"pip stdout =\n{proc.stdout}")
         logger.debug(f"pip stderr =\n{proc.stderr}")
         logger.debug(f"Exception: {type(e).__name__}: {e}")
-        logger.error(f"Failed to install whisper")
-        logger.error(f"Are git and pip available in your PATH?")
+        logger.error('Failed to install whisper')
+        logger.error('Are git and pip available in your PATH?')
         sys.exit(1)
 
 
