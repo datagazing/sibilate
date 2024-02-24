@@ -64,7 +64,7 @@ def main():
         save_srtfile(result) if monist.config['srt'] else None
         if monist.config['subtitles']:
             add_subtitles(result, inputfile=monist.config['inputfile'])
-        elif monist.config['burn']:
+        if monist.config['burn']:
             burn_subtitles(result, inputfile=monist.config['inputfile'])
     except ModuleNotFoundError as e:
         logger.error(f"{e}")
@@ -92,7 +92,7 @@ def transcribe(
 ):
     import whisper
 
-    logger.info(f"Target language is: {language}")
+    logger.info(f"Language is: {language}")
     logger.info(f"Model cache directory is: '{root}'")
     logger.info(f"Loading model '{model}' ...")
     m = whisper.load_model(model, download_root=root)
